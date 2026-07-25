@@ -6,7 +6,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-
+import PdfUpload from "./PdfUpload";
+import { useNotebook } from "@/context/NotebookContext";
 import { Button } from "@/components/ui/button";
 
 import {
@@ -17,10 +18,12 @@ import {
 } from "lucide-react";
 
 export default function AddSourceDialog({
+    
   open,
   onOpenChange,
   onUploadPdf,
 }) {
+    const { selectedNotebook } = useNotebook();
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-lg">
@@ -31,14 +34,21 @@ export default function AddSourceDialog({
 
         <div className="mt-4 grid gap-4">
 
-          <Button
-            variant="outline"
-            className="h-16 justify-start"
-            onClick={onUploadPdf}
-          >
-            <Upload className="mr-3 h-5 w-5" />
-            Upload PDF
-          </Button>
+          <PdfUpload
+            notebookId={selectedNotebook.id}
+            onUploaded={(source) => {
+            console.log("Uploaded:", source);
+            onUploadPdf?.(source);
+           onOpenChange(false);}}
+      >
+        <Button
+        variant="outline"
+        className="h-16 w-full justify-start"
+    >
+        <Upload className="mr-3 h-5 w-5" />
+         Upload PDF
+        </Button>
+      </PdfUpload>
 
           <Button
             variant="outline"
