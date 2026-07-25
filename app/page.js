@@ -6,6 +6,7 @@ export default function Home() {
   return (
     <AppLayout sidebar={<Sidebar />}>
       <Welcome />
+      {/* <Welcome onNewNotebook={() => setDialogOpen(true)} /> */}
     </AppLayout>
   );
 }

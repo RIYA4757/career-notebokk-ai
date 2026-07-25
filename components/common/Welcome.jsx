@@ -6,7 +6,7 @@ import {
   Sparkles,
 } from "lucide-react";
 
-export default function Welcome() {
+export default function Welcome({onNewNotebook }) {
   return (
     <div className="flex h-full flex-col">
 
@@ -31,7 +31,7 @@ export default function Welcome() {
 
           <div className="mt-10 flex justify-center gap-4">
 
-            <Button size="lg">
+            <Button size="lg" onClick={onNewNotebook} >
               <Plus className="mr-2 h-5 w-5" />
               New Notebook
             </Button>
