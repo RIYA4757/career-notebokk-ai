@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Notebook {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  sources     Source[]
+  messages    Message[]
+}
+
+model Source {
+  id            String   @id @default(cuid())
+
+  notebookId    String
+
+  title         String
+  type          String
+  status        String
+
+  originalName  String?
+  mimeType      String?
+  fileSize      Int?
+
+  s3Key         String?
+  bucket        String?
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  notebook Notebook @relation(fields: [notebookId], references: [id], onDelete: Cascade)
+}
+
+model Message {
+  id          String   @id @default(cuid())
+
+  notebookId  String
+
+  role        String
+  content     String
+
+  createdAt   DateTime @default(now())
+
+  notebook    Notebook @relation(fields: [notebookId], references: [id], onDelete: Cascade)
+}
