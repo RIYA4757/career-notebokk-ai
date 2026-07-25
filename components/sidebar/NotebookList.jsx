@@ -2,10 +2,12 @@
 
 import { useEffect, useState } from "react";
 import NotebookItem from "./NotebookItem";
+import { useNotebook } from "@/context/NotebookContext";
 
 export default function NotebookList({ refreshKey }) {
   const [notebooks, setNotebooks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { selectedNotebook, setSelectedNotebook } = useNotebook();
 
   useEffect(() => {
     fetchNotebooks();
@@ -35,8 +37,9 @@ export default function NotebookList({ refreshKey }) {
   if (notebooks.length === 0) {
     return (
       <NotebookItem
-        title="No notebooks yet"
-        description="Click 'New Notebook' to create your first notebook."
+        notebook={{ title: "No notebooks yet", description: "Click 'New Notebook' to create your first notebook." }}    
+        isSelected={false}
+        onSelect={() => {}}
       />
     );
   }
@@ -46,8 +49,11 @@ export default function NotebookList({ refreshKey }) {
       {notebooks.map((notebook) => (
         <NotebookItem
           key={notebook.id}
-          title={notebook.title}
-          description="AI Notebook"
+        //   title={notebook.title}
+        notebook={notebook}
+        //   description="AI Notebook"
+         isSelected={selectedNotebook?.id === notebook.id}
+         onSelect={setSelectedNotebook}
         />
       ))}
     </div>
