@@ -1,152 +1,67 @@
-// import { NextResponse } from "next/server";
-
-// import { searchVectors } from "@/lib/retriever/searchVectors";
-// import { generateAnswer } from "@/lib/rag/generateAnswer";
-
-// export async function POST(request) {
-//   try {
-//     const { question } = await request.json();
-
-//     if (!question) {
-//       return NextResponse.json(
-//         { error: "Question is required" },
-//         { status: 400 }
-//       );
-//     }
-
-//     const searchResults = await searchVectors(question);
-//     if (!searchResults || searchResults.length === 0) {
-//       return NextResponse.json({
-//         answer: "Sorry, I couldn't find anything related to your question.",
-//         lesson: null,
-//         module: null,
-//         course: null,
-//         start: null,
-//         end: null,
-//       });
-//     }
-
-    
-
-//     // return NextResponse.json({
-//     //   answer,
-//     //   sources: searchResults,
-//     // });
-//     const bestMatch = searchResults[0].payload;
-//      if (bestMatch.score < 0.6) {
-
-//     return NextResponse.json({
-//         answer: "Sorry, I couldn't find anything related to your question.",
-//         lesson: null,
-//         module: null,   
-//         // lesson: bestMatch.lesson,
-//         // module: bestMatch.module,
-//         course: null,
-//         start: null,
-//         end: null,
-//     });
-// }
-// const answer = await generateAnswer(question, searchResults);
-// return NextResponse.json({
-//       answer,
-//       lesson: bestMatch.payload.lesson
-//         .replace(".vtt", "")
-//         .replace(".srt", ""),
-//       module: bestMatch.payload.module,
-//       course: bestMatch.payload.course,
-//       start: bestMatch.payload.start,
-//       end: bestMatch.payload.end,
-//     });
-//   }
-//   catch (error) {
-//     console.error(error);
-
-//     return NextResponse.json(
-//       {
-//         error: error.message,
-//       },
-//       {
-//         status: 500,
-//       }
-//     );
-//   }
-// }
-
 import { NextResponse } from "next/server";
-
+import { prisma } from "@/lib/db";
 import { searchVectors } from "@/lib/retriever/searchVectors";
 import { generateAnswer } from "@/lib/rag/generateAnswer";
 
 export async function POST(request) {
   try {
-    const { question } = await request.json();
+    const { notebookId, message } = await request.json();
 
-    if (!question) {
+    if (!notebookId || !message) {
       return NextResponse.json(
-        { error: "Question is required" },
-        { status: 400 }
+        {
+          error: "Notebook ID and message are required.",
+        },
+        {
+          status: 400,
+        }
       );
     }
 
-    const searchResults = await searchVectors(question);
+    await prisma.message.create({
+      data: {
+        notebookId,
+        role: "user",
+        content: message,
+      },
+    });
 
-    if (!searchResults || searchResults.length === 0) {
+    const searchResults = await searchVectors(message, notebookId);
+
+    console.log("Search Results:", searchResults);
+
+    const bestResult = searchResults?.[0];
+
+    if (!bestResult || bestResult.score < 0.25) {
       return NextResponse.json({
-        answer: "Sorry, I couldn't find anything related to your question.",
-        lesson: null,
-        module: null,
-        course: null,
-        start: null,
-        end: null,
+        answer: "I couldn't find that information in your uploaded sources.",
+        sources: [],
       });
     }
 
-    const bestMatch = searchResults[0];
+    const answer = await generateAnswer(message, searchResults);
 
-    console.log("Best Match Score:", bestMatch.score);
-
-    // if (!bestMatch.payload || bestMatch.score < 0.6) {
-    //   return NextResponse.json({
-    //     answer:
-    //       "Sorry, I couldn't find this topic in the course transcripts.",
-    //     lesson: null,
-    //     module: null,
-    //     course: null,
-    //     start: null,
-    //     end: null,
-    //   });
-    // }
-    const SIMILARITY_THRESHOLD = 0.5;
-
-if (!bestMatch.payload || bestMatch.score < SIMILARITY_THRESHOLD) {
-  return NextResponse.json({
-    answer: "Sorry, I couldn't find this topic in the course transcripts.",
-    lesson: null,
-    module: null,
-    course: null,
-    start: null,
-    end: null,
-  });
-}
-
-    const answer = await generateAnswer(question, searchResults);
+    await prisma.message.create({
+      data: {
+        notebookId,
+        role: "assistant",
+        content: answer,
+      },
+    });
 
     return NextResponse.json({
       answer,
-      lesson: bestMatch.payload.lesson
-        ?.replace(".vtt", "")
-        ?.replace(".srt", ""),
-      module: bestMatch.payload.module,
-      course: bestMatch.payload.course,
-      start: bestMatch.payload.start,
-      end: bestMatch.payload.end,
+      sources: searchResults.map((item) => ({
+        score: item.score,
+        payload: item.payload,
+      })),
     });
   } catch (error) {
     console.error(error);
 
     return NextResponse.json(
       {
-        error: error.message,
+        error: error.message || "Something went wrong",
       },
       {
         status: 500,

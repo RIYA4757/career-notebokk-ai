@@ -44,7 +44,7 @@ export default function PdfUpload({
       <input
         ref={inputRef}
         type="file"
-        accept=".pdf"
+        accept=".zip,.pdf,.doc,.docx,.ppt,.pptx,.txt,.md,.csv,image/*"
         hidden
         onChange={uploadFile}
       />

@@ -35,6 +35,9 @@ model Source {
   s3Key         String?
   bucket        String?
 
+  filePath      String?
+  extractPath   String?
+
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 

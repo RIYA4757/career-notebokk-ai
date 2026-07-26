@@ -1,5 +1,5 @@
 "use client";
-
+import NotebookChat from "./NotebookChat";
 import { useState } from "react";
 import { Pencil, Trash2 } from "lucide-react";
 import EditNotebookDialog from "./EditNotebookDialog";
@@ -79,7 +79,8 @@ export default function NotebookWorkspace() {
         />
 
         <SourceList />
-
+        <NotebookChat />
+        
         <AddSourceDialog
           open={dialogOpen}
           onOpenChange={setDialogOpen}
