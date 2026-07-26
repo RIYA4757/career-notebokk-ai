@@ -1,0 +1,112 @@
+# Career Notebook AI
+
+Career Notebook AI is an AI-powered knowledge management application that allows users to create notebook-specific knowledge bases and interact with their documents using natural language. The application uses Retrieval-Augmented Generation (RAG) to retrieve relevant information and generate context-aware responses.
+
+## Features
+
+- Create and manage multiple notebooks
+- Upload and process multiple document types:
+  - PDF
+  - DOCX
+  - PPT/PPTX
+  - TXT
+  - Images (OCR)
+  - Website URLs
+  - YouTube Transcripts
+  - ZIP Archives
+  - SRT/VTT Transcripts
+- AI-powered question answering
+- Semantic search using vector embeddings
+- Source citations for generated answers
+- Notebook-level knowledge isolation
+- Responsive user interface
+
+## Tech Stack
+
+### Frontend
+- Next.js 16
+- React 19
+- Tailwind CSS
+- shadcn/ui
+
+### Backend
+- Next.js API Routes
+- Prisma ORM
+
+### Database
+- PostgreSQL
+
+### AI & Vector Search
+- OpenAI API
+- Qdrant Vector Database
+- LangChain
+
+### Document Processing
+- Mammoth
+- Office Parser
+- OCR
+- YouTube Transcript API
+
+## How It Works
+
+1. Create a notebook.
+2. Upload one or more supported sources.
+3. Documents are processed and converted into embeddings.
+4. Embeddings are stored in Qdrant.
+5. Ask questions in natural language.
+6. Relevant context is retrieved and sent to the LLM.
+7. AI generates responses with source citations.
+
+## Installation
+
+```bash
+git clone https://github.com/RIYA4757/career-notebook-ai.git
+
+cd career-notebook-ai
+
+npm install
+```
+
+Create a `.env` file and configure the required environment variables.
+
+Run the development server:
+
+```bash
+npm run dev
+```
+
+Open:
+
+```
+http://localhost:3000
+```
+
+## Environment Variables
+
+```
+DATABASE_URL=
+OPENAI_API_KEY=
+QDRANT_URL=
+QDRANT_API_KEY=
+```
+
+## Future Improvements
+
+- Enhanced PDF processing
+- User authentication
+- Chat history
+- Streaming AI responses
+- Cloud file storage
+- Hybrid search and reranking
+
+## Live Demo
+
+https://career-notebokk-ai-production.up.railway.app
+
+## GitHub Repository
+
+https://github.com/RIYA4757/career-notebook-ai
+
+## License
+
+This project was built for learning and educational purposes.
