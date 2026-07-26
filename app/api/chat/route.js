@@ -32,7 +32,7 @@ export async function POST(request) {
 
     const bestResult = searchResults?.[0];
 
-    if (!bestResult || bestResult.score < 0.25) {
+    if (!bestResult || bestResult.score < 0.12) {
       return NextResponse.json({
         answer: "I couldn't find that information in your uploaded sources.",
         sources: [],

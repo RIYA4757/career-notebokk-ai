@@ -18,6 +18,7 @@ export default function NotebookChat() {
         setAnswer(null);
 
         try {
+
             const response = await fetch("/api/chat", {
                 method: "POST",
                 headers: {
@@ -66,13 +67,20 @@ export default function NotebookChat() {
                     <p className="whitespace-pre-wrap">{answer.answer}</p>
                     {answer.sources?.length > 0 && (
                         <div className="mt-5 border-t pt-4 text-sm">
-                            <p>
-                                <strong>Source:</strong>{" "}
-                                {answer.sources[0].payload.lesson
-                                    ?.replace("_epm", "")
-                                    .replace(/_/g, " ")
-                                    .replace(/-/g, " ")}
-                            </p>
+                        <p>
+                        <strong>Source:</strong>{" "}
+                        <a
+                            href={answer.sources[0].payload.source}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 underline"
+                        >
+                            {answer.sources[0].payload.lesson
+                                ?.replace("_epm", "")
+                                .replace(/_/g, " ")
+                                .replace(/-/g, " ")}
+                        </a>
+                    </p>
 
                             {typeof answer.sources[0].payload.start === "string" ? (
                                 <p>

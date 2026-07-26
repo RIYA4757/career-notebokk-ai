@@ -86,99 +86,76 @@ export default function AddSourceDialog({
         }
       }
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg">
+  <Dialog open={open} onOpenChange={onOpenChange}>
+    <DialogContent className="sm:max-w-lg">
+      <DialogHeader>
+        <DialogTitle>Add Knowledge Source</DialogTitle>
+      </DialogHeader>
 
-        <DialogHeader>
-          <DialogTitle>Add Knowledge Source</DialogTitle>
-        </DialogHeader>
-
-        <div className="mt-4 grid gap-4">
-
+      <div className="mt-4 space-y-5">
+        {/* PDF */}
+        <div className="space-y-2">
           <PdfUpload
             notebookId={selectedNotebook.id}
             onUploaded={(source) => {
-            console.log("Uploaded:", source);
-            onUploadPdf?.(source);
-           onOpenChange(false);}}
-      >
-        <Button
-        variant="outline"
-        className="h-16 w-full justify-start"
-    >
-        <Upload className="mr-3 h-5 w-5" />
-         Upload PDF
-        </Button>
-      </PdfUpload>
+              console.log("Uploaded:", source);
+              onUploadPdf?.(source);
+              onOpenChange(false);
+            }}
+          >
+            <Button
+              variant="outline"
+              className="w-full justify-start"
+            >
+              <Upload className="mr-3 h-5 w-5" />
+              Upload PDF
+            </Button>
+          </PdfUpload>
+        </div>
 
-          {/* <Button
+        {/* Website */}
+        <div className="space-y-2">
+          <input
+            type="text"
+            placeholder="Paste Website URL"
+            value={websiteUrl}
+            onChange={(e) => setWebsiteUrl(e.target.value)}
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+          />
+
+          <Button
             variant="outline"
-            className="h-16 justify-start"
-            disabled
+            className="w-full justify-start"
+            onClick={uploadWebsite}
+            disabled={loading}
           >
             <Globe className="mr-3 h-5 w-5" />
-            Website (Coming Soon)
-          </Button> */}
-          <div className="space-y-2">
-  <input
-    type="text"
-    placeholder="Paste Website URL"
-    value={websiteUrl}
-    onChange={(e) => setWebsiteUrl(e.target.value)}
-    className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
-  />
+            {loading ? "Importing..." : "Import Website"}
+          </Button>
+        </div>
 
-        <Button
-          variant="outline"
-          className="w-full justify-start"
-          onClick={uploadWebsite}
-          disabled={loading}
-        >
-          <Globe className="mr-3 h-5 w-5" />
-          {loading ? "Importing..." : "Import Website"}
-        </Button>
-      </div>
-
-          {/* <Button
-            variant="outline"
-            className="h-16 justify-start"
-            disabled
-          >
-            <Play className="mr-3 h-5 w-5" />
-            YouTube (Coming Soon)
-          </Button> */}
+        {/* YouTube */}
         <div className="space-y-2">
-        <input
+          <input
             type="text"
             placeholder="Paste YouTube URL"
             value={youtubeUrl}
             onChange={(e) => setYoutubeUrl(e.target.value)}
-            className="w-full rounded-md border px-3 py-2 text-sm"
-            />
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+          />
 
-        <Button
+          <Button
             variant="outline"
             className="w-full justify-start"
             onClick={uploadYoutube}
             disabled={loading}
-        >
+          >
             <Play className="mr-3 h-5 w-5" />
             {loading ? "Importing..." : "Import YouTube"}
-        </Button>
-        </div>
-
-          <Button
-            variant="outline"
-            className="h-16 justify-start"
-            disabled
-          >
-            <FileText className="mr-3 h-5 w-5" />
-            Transcript (Coming Soon)
           </Button>
-
         </div>
-
-      </DialogContent>
-    </Dialog>
-  );
+      </div>
+    </DialogContent>
+  </Dialog>
+);
 }
